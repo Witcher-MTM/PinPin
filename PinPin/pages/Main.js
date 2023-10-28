@@ -2,7 +2,8 @@ import {Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
 import ToolBar from '../components/ToolBar';
 import ScoreBar from '../components/ScoreBar';
 import GameWindow from '../components/GameWindow';
-const { width, height } = Dimensions.get('window');
+import Bet from '../components/Bet/Bet';
+import React from 'react';
 
 export default Main = () => {
   return (
@@ -10,18 +11,17 @@ export default Main = () => {
       <ToolBar/>
       <ScoreBar/>
       <GameWindow/>
+      <Bet/>
       </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
     container: {
-        position: "absolute",
         flex:1,
-        zIndex: 1,
         paddingTop: 44, 
-        paddingRight: 15,
         alignContent:"center",
-        alignItems:"center"
+        alignItems:"center",
+        backgroundColor:'#000000'
       },
 })

@@ -43,9 +43,6 @@ export default GameWindow = () => {
           ]);
         Animated.parallel([animationX, animationY]).start(({ finished }) => {
             if (finished) {
-                while(true){
-                    swingAnimation.start()
-                }
                 
             }
         });
