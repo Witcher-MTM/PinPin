@@ -1,84 +1,50 @@
-import { Dimensions, View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { Dimensions, View, Text, StyleSheet } from 'react-native';
 import React, { useState, useRef } from 'react';
-
+import Animated, { Easing, withSpring, withRepeat, useSharedValue, useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
 const { width, height } = Dimensions.get('window');
 
 export default GameWindow = () => {
-    const [a, setA] = useState((Math.random() * 50).toFixed(2));
-    const translateY = useState(new Animated.Value(0))[0];
-    const translateYForLoop = useState(new Animated.Value(0))[0];
-    const translateX = useState(new Animated.Value(0))[0];
-    const [score, setScore] = useState(0);
-    const [scoreInterval, setScoreInterval] = useState(null);
+    const [a,setA] = React.useState((Math.random() * 50).toFixed(2));
+    const translateY = useSharedValue(0);
+    const translateX = useSharedValue(0);
+    const score = useSharedValue(0);
+    const [intervalID, setIntervalID] = useState(null)
     const updateScore = () => {
-        setScore((prevScore) => parseFloat(prevScore + 0.1).toFixed(1));
-      };
+        score.value = withTiming(score.value + 0.1, { duration: 250 });
+        console.log(score.value)
+        return score.value
+    };
     const RandA = () => {
         setA((Math.random() * 50).toFixed(2));
     };
-    const Swinging = () =>{
-        translateY.setValue(-1000)
-        const swingAnimation = Animated.sequence([
-            Animated.timing(translateY, {
-              toValue: -100, // Початкове значення згори
-              duration: 1000,
-              easing: Easing.linear,
-              useNativeDriver: false,
-            }),
-            Animated.timing(translateY, {
-              toValue:-150, // Повернення до поточного значення
-              duration: 1000,
-              easing: Easing.linear,
-              useNativeDriver: false,
-            }),
-          ]);
-        return swingAnimation
-    }
     const animateToPoint = () => {
-        const animationX = Animated.timing(translateX, {
-            toValue: 250, // Зсув в правий кут
-            duration: 3500,
-            easing: Easing.linear,
-            useNativeDriver: false,
-        });
-
-        const animationY = Animated.timing(translateY, {
-            toValue: -100, // Зсув вгору
-            duration: 3500,
-            easing: Easing.linear,
-            useNativeDriver: false,
-        });
-        Animated.parallel([animationX, animationY]).start(({ finished }) => {
-            if (finished) {
-                const loop = Animated.loop(Swinging());
-                loop.start();
-            }
+        translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
+        translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear }, () => {
+            console.log("anim end")
+            translateY.value = withRepeat(withTiming(-100, { duration: 3500, easing: Easing.linear }), -1, true);
         });
     };
-    React.useEffect(() => {
-        const intervalId = setInterval(updateScore, 250); 
-        if(score >= a){
-            console.log("crash")
-        }
-        setScoreInterval(intervalId);
-    }, [a]);
-
+    React.useEffect(() => { 
+        RandA();
+        animateToPoint();
+        setIntervalID(setInterval(() => {
+            updateScore();
+        }, 1000));
+    
+        return () => clearInterval(intervalID);
+        
+    },[]);
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+        };
+    });
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
-                <Text style={styles.scoreLabel}>{parseFloat(score).toFixed(2)}</Text>
+            <Text style={styles.scoreLabel}>{updateScore()}</Text> 
                 <View style={styles.chart}>
-                    <Animated.View
-                        style={[
-                            styles.line,
-                            {
-                                transform: [
-                                    { translateX },
-                                    { translateY },
-                                ],
-                            },
-                        ]}
-                    />
+                    <Animated.View style={[styles.line, animatedStyle]} />
                 </View>
             </View>
         </View>
