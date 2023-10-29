@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { Dimensions, View, StyleSheet } from 'react-native';
 import ScoreBarElements from './ScoreBarElements';
 
 const { width, height } = Dimensions.get('window');
@@ -16,10 +16,9 @@ export default ScoreBar = () => {
 const styles = StyleSheet.create({
     container: {
         paddingLeft:15,
-        backgroundColor: 'gray',
+        backgroundColor: '#000000',
         alignItems: 'left',
         width: width,
-
     },
     row: {
         flexDirection: 'row',

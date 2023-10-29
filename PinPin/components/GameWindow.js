@@ -1,60 +1,72 @@
-import { Dimensions, View, Text, TouchableWithoutFeedback, StyleSheet, Animated, Easing } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import React, { useState, useRef } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
 export default GameWindow = () => {
     const [a, setA] = useState((Math.random() * 50).toFixed(2));
-    const translateY = useRef(new Animated.Value(0)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
+    const translateY = useState(new Animated.Value(0))[0];
+    const translateYForLoop = useState(new Animated.Value(0))[0];
+    const translateX = useState(new Animated.Value(0))[0];
     const [score, setScore] = useState(0);
-
+    const [scoreInterval, setScoreInterval] = useState(null);
+    const updateScore = () => {
+        setScore((prevScore) => parseFloat(prevScore + 0.1).toFixed(1));
+      };
     const RandA = () => {
         setA((Math.random() * 50).toFixed(2));
     };
-
-    const animateToPoint = (toValue) => {
+    const Swinging = () =>{
+        translateY.setValue(-1000)
+        const swingAnimation = Animated.sequence([
+            Animated.timing(translateY, {
+              toValue: -100, // Початкове значення згори
+              duration: 1000,
+              easing: Easing.linear,
+              useNativeDriver: false,
+            }),
+            Animated.timing(translateY, {
+              toValue:-150, // Повернення до поточного значення
+              duration: 1000,
+              easing: Easing.linear,
+              useNativeDriver: false,
+            }),
+          ]);
+        return swingAnimation
+    }
+    const animateToPoint = () => {
         const animationX = Animated.timing(translateX, {
-            toValue: 90, // Зсув в правий кут
-            duration: 2500,
+            toValue: 250, // Зсув в правий кут
+            duration: 3500,
             easing: Easing.linear,
             useNativeDriver: false,
         });
 
         const animationY = Animated.timing(translateY, {
-            toValue: -75, // Зсув вгору
-            duration: 2500,
+            toValue: -100, // Зсув вгору
+            duration: 3500,
             easing: Easing.linear,
             useNativeDriver: false,
         });
-        const swingAnimation = Animated.sequence([
-            Animated.timing(translateY, {
-              toValue: -85, // Зсув вверх
-              duration: 250,
-              easing: Easing.linear,
-              useNativeDriver: false,
-            }),
-            Animated.timing(translateY, {
-              toValue: -75, // Возврат в исходное положение
-              duration: 250,
-              easing: Easing.linear,
-              useNativeDriver: false,
-            }),
-          ]);
         Animated.parallel([animationX, animationY]).start(({ finished }) => {
             if (finished) {
-                
+                const loop = Animated.loop(Swinging());
+                loop.start();
             }
         });
     };
     React.useEffect(() => {
-        animateToPoint(a)
+        const intervalId = setInterval(updateScore, 250); 
+        if(score >= a){
+            console.log("crash")
+        }
+        setScoreInterval(intervalId);
     }, [a]);
 
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
-                <Text style={styles.scoreLabel}>{(score).toFixed(2)}</Text>
+                <Text style={styles.scoreLabel}>{parseFloat(score).toFixed(2)}</Text>
                 <View style={styles.chart}>
                     <Animated.View
                         style={[
@@ -75,14 +87,14 @@ export default GameWindow = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
     chartContainer: {
         width: width * 0.95,
-        height: height * 0.4,
-        backgroundColor: 'red',
+        height: height * 0.3,
+        borderWidth: 2,
+        borderColor:"#5c5c5c",
         borderRadius: 20,
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -101,7 +113,9 @@ const styles = StyleSheet.create({
     },
     scoreLabel: {
         position: 'absolute',
-        top: '30%',
-        left: '45%'
+        fontSize:30,
+        top: '15%',
+        left: '40%',
+        color:"#FFFFFF"
     }
 });

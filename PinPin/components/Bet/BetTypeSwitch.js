@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor:"#000000",
     borderRadius:10,
     borderWidth:2,
     paddingHorizontal: 10,
@@ -51,10 +52,10 @@ const styles = StyleSheet.create({
   switchText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'gray',
+    color: '#878787',
   },
   selected: {
-    color: 'black',
+    color: '#FFFFFF',
   },
 });
 

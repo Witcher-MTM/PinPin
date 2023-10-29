@@ -12,6 +12,7 @@ export default ScoreBarElements = ({ scoreid, text }) => {
 const styles = StyleSheet.create({
     text: {
       margin: 5,
-      fontSize: 20
+      fontSize: 20,
+      color:"#5a007a"
     }
   });
