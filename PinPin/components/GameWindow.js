@@ -1,38 +1,26 @@
-import { Dimensions, View, Text, StyleSheet } from 'react-native';
-import React, { useState, useRef } from 'react';
-import Animated, { Easing, withSpring, withRepeat, useSharedValue, useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
+import { Dimensions, View,StyleSheet } from 'react-native';
+import React from 'react';
+import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import CrashScore from './CrashScore';
+import { useSelector } from 'react-redux';
 const { width, height } = Dimensions.get('window');
 
 export default GameWindow = () => {
-    const [a,setA] = React.useState((Math.random() * 50).toFixed(2));
     const translateY = useSharedValue(0);
+    const Score = useSelector((state) => state.score.value)
     const translateX = useSharedValue(0);
-    const score = useSharedValue(0);
-    const [intervalID, setIntervalID] = useState(null)
-    const updateScore = () => {
-        score.value = withTiming(score.value + 0.1, { duration: 250 });
-        console.log(score.value)
-        return score.value
-    };
-    const RandA = () => {
-        setA((Math.random() * 50).toFixed(2));
-    };
-    const animateToPoint = () => {
+    const animateToPoint = async () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
         translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear }, () => {
             console.log("anim end")
             translateY.value = withRepeat(withTiming(-100, { duration: 3500, easing: Easing.linear }), -1, true);
         });
     };
+    const StartGame = async()=>{
+        animateToPoint(); 
+    }
     React.useEffect(() => { 
-        RandA();
-        animateToPoint();
-        setIntervalID(setInterval(() => {
-            updateScore();
-        }, 1000));
-    
-        return () => clearInterval(intervalID);
-        
+        StartGame()
     },[]);
     const animatedStyle = useAnimatedStyle(() => {
         return {
@@ -42,7 +30,7 @@ export default GameWindow = () => {
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
-            <Text style={styles.scoreLabel}>{updateScore()}</Text> 
+                <CrashScore></CrashScore>
                 <View style={styles.chart}>
                     <Animated.View style={[styles.line, animatedStyle]} />
                 </View>
@@ -77,11 +65,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 5,
     },
-    scoreLabel: {
-        position: 'absolute',
-        fontSize:30,
-        top: '15%',
-        left: '40%',
-        color:"#FFFFFF"
-    }
+    
 });
