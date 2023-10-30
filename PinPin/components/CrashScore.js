@@ -1,29 +1,31 @@
 import { Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { useDispatch } from "react-redux";
-import { setScore } from '../modules/ScoreSlice'
+import { setScore, setGameEnd } from '../modules/ScoreSlice'
 export default CrashScore = () => {
     const [a, setA] = React.useState((Math.random() * 3).toFixed(2));
     const [scoreVisible, setScoreVisible] = React.useState(1)
     const [color, setColor] = React.useState(false)
     const dispatch = useDispatch()
     React.useEffect(() => {
+        console.log("random", a)
         let scoreVisible = 0
         // function creation
         let interval = setInterval(function () {
-            scoreVisible+=0.1
-                console.log("random", a)
-                console.log("score", scoreVisible)
-                setScoreVisible(scoreVisible)
+            scoreVisible += 0.1
+            console.log("score", scoreVisible)
+            setScoreVisible(scoreVisible)
             if (parseFloat(scoreVisible).toFixed(2) >= a) {
+                dispatch(setGameEnd(true))
                 dispatch(setScore(Number(scoreVisible)))
                 setColor(true)
                 console.log("stop")
                 clearInterval(interval);
-            }else{
+            } else {
+                dispatch(setGameEnd(false))
                 setColor(false)
             }
-        }, 400);
+        }, 250);
     }, []);
 
 
@@ -38,8 +40,8 @@ const styles = StyleSheet.create({
         top: '15%',
         left: '40%',
         color: "#FFFFFF"
-    },  
-    scoreLabelEnd:{
-        color:"red"
+    },
+    scoreLabelEnd: {
+        color: "red"
     }
 });

@@ -4,7 +4,7 @@ export const scoreSlice = createSlice({
   name: 'score',
   initialState: {
     value: 0,
-    isEnd
+    isEnd:false
   },
   reducers: {
     setScore: (state, action) => {

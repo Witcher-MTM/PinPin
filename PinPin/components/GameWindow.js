@@ -8,7 +8,9 @@ const { width, height } = Dimensions.get('window');
 export default GameWindow = () => {
     const translateY = useSharedValue(0);
     const Score = useSelector((state) => state.score.value)
+    const isEndGame = useSelector((state)=>state.score.isEnd)
     const translateX = useSharedValue(0);
+
     const animateToPoint = async () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
         translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear }, () => {
@@ -17,11 +19,17 @@ export default GameWindow = () => {
         });
     };
     const StartGame = async()=>{
-        animateToPoint(); 
+        if(!isEndGame){
+            animateToPoint(); 
+        }else{
+            console.log("Score in gameWindow", Score)
+            console.log("game is end", isEndGame)
+        }
+        
     }
     React.useEffect(() => { 
         StartGame()
-    },[]);
+    },[Score]);
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
