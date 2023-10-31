@@ -2,12 +2,20 @@ import { Dimensions, StyleSheet, View, Text, TouchableWithoutFeedback } from "re
 import BetTypeSwitch from "./BetTypeSwitch";
 const { width, height } = Dimensions.get('window');
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMoney } from "../../modules/MoneySlice";
+import { saveDataToLocalStorage } from "../../modules/LocalStorage";
 
 export default Bet = () => {
+    const dispatch = useDispatch()
     const [bet, setBet] = React.useState(1)
     const isEnd = (useSelector((state) => state.score.isEnd))
+    const isGameNow = useSelector((state) => state.score.isGameNow)
     const [isSetBet, setIsSetBet] = React.useState(false)
+    const [isSetBeforeGame, setIsSetBeforeGame] = React.useState(false)
+    const [total_money, setTotalMoney] = React.useState(0)
+    const Score = (useSelector((state) => state.score.value))
+    const tmp_money = useSelector((state) => state.money.value)
     const increase = () => {
         if (bet >= 100) {
             setBet(100)
@@ -22,6 +30,9 @@ export default Bet = () => {
         }
     }
     const updateBet = (amount) => {
+        if (bet >= total_money) {
+            setBet(total_money)
+        }
         if (bet >= 100) {
             setBet(100)
         } else {
@@ -30,30 +41,41 @@ export default Bet = () => {
     };
     const confirmBet = () => {
         if (!isEnd) {
-            console.log("u cant bet while game ")
+            setIsSetBeforeGame(true)
         }
         else {
             setIsSetBet(true)
             console.log("Confirmed bet ", bet)
+            console.log("total money", total_money)
         }
     }
     const catchReward = () => {
-        if (isSetBet) {
-            console.log("u won")
-            setIsSetBet(false)
-            return
-        } else {
-            console.log("u didnt have a bet")
-        }
+            if (isSetBet) {
+                dispatch(setMoney((parseFloat(total_money) + parseFloat(bet) * parseFloat(Score)).toFixed(2)))
+                saveDataToLocalStorage({ key: "total_money", data: total_money})
+                setIsSetBet(false)
+                return
+            } else {
+                console.log("u didnt have a bet")
+            }
     }
-    const loseMoney = ()=>{
-        if(isSetBet){
-            console.log("u lose")
-            
+    const cancelBet = ()=>{
+        setIsSetBet(false)
+
+    }
+    const loseMoney = () => {
+        if (isEnd) {
+            if (isSetBet) {
+                console.log("u lose", bet)
+                dispatch(setMoney(parseFloat(total_money) - parseFloat(bet)))
+                saveDataToLocalStorage({ key: "total_money", data: (parseFloat(total_money) - parseFloat(bet)).toFixed(2) })
+                setIsSetBet(false)
+            }
         }
     }
     React.useEffect(() => {
-        catchReward()
+        setTotalMoney(tmp_money)
+        loseMoney()
     }, [isEnd])
     return (
         <View style={styles.container}>
@@ -96,11 +118,19 @@ export default Bet = () => {
             <View style={styles.yourBet}>
                 {isSetBet
                     ?
-                    <TouchableWithoutFeedback onPress={catchReward}>
+                    <>
+                    {isEnd 
+                    ? <TouchableWithoutFeedback onPress={cancelBet}>
+                        <View style={styles.yourBetButton}>
+                            <Text style={styles.yourBetButtonText}>Отмена</Text>
+                        </View>
+                    </TouchableWithoutFeedback> 
+                    : <TouchableWithoutFeedback onPress={catchReward}>
                         <View style={styles.yourBetButton}>
                             <Text style={styles.yourBetButtonText}>Вивести</Text>
                         </View>
-                    </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback> }
+                    </>
                     :
                     <TouchableWithoutFeedback onPress={confirmBet}>
                         <View style={styles.yourBetButton}>

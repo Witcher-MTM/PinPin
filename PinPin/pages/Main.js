@@ -9,8 +9,8 @@ import { useDispatch } from 'react-redux';
 import { setMoney } from '../modules/MoneySlice';
 
 export default Main = () => {
+  const dispatch = useDispatch()
   const checkForLocalVariables = async()=>{
-    const dispatch = useDispatch()
     const total_money = await getDataFromLocalStorage("total_money")
     if(total_money==null){
       saveDataToLocalStorage({key:"total_money", data:3000})
