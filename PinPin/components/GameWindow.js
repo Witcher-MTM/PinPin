@@ -14,7 +14,7 @@ export default GameWindow = () => {
     const restartGame = () => {
         console.log("time out")
     }
-    const animateToPoint = async () => {
+    const animateToPoint = () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
         translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear },()=>{
             console.log("end anim")
@@ -30,6 +30,8 @@ export default GameWindow = () => {
             console.log("game is end", isEndGame)
             cancelAnimation(translateX)
             cancelAnimation(translateY)
+            translateX.value = 0
+            translateY.value = 0
             
         }
 
@@ -39,8 +41,6 @@ export default GameWindow = () => {
         return () => {
             setTimeout(() => {
                 restartGame() 
-                translateX.value = 0
-                translateY.value = 0
               }, 6500); 
         };
     }, [isEndGame]);
