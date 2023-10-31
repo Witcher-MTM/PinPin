@@ -4,8 +4,25 @@ import ScoreBar from '../components/ScoreBar';
 import GameWindow from '../components/GameWindow';
 import Bet from '../components/Bet/Bet';
 import React from 'react';
+import {getDataFromLocalStorage, saveDataToLocalStorage} from "../modules/LocalStorage"
+import { useDispatch } from 'react-redux';
+import { setMoney } from '../modules/MoneySlice';
 
 export default Main = () => {
+  const checkForLocalVariables = async()=>{
+    const dispatch = useDispatch()
+    const total_money = await getDataFromLocalStorage("total_money")
+    if(total_money==null){
+      saveDataToLocalStorage({key:"total_money", data:3000})
+      dispatch(setMoney(3000))
+    }
+    else{
+      dispatch(setMoney(total_money))
+    }
+  }
+  React.useEffect(()=>{
+    checkForLocalVariables()
+  })
   return (
       <SafeAreaView style={styles.container}>
       <ToolBar/>

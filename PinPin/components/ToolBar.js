@@ -1,15 +1,16 @@
 import React from 'react';
 import { Dimensions, View, Text, StyleSheet } from 'react-native';
-
+import {getDataFromLocalStorage} from '../modules/LocalStorage'
 const { width, height } = Dimensions.get('window');
 
 export default ToolBar = () => {
+    const [totalMoney, setTotalMoney] = React.useState(3000)
     return (
         <View style={styles.container}>
             <View style={styles.row}>
                 <Text style={[styles.text, styles.leftText]}>Aviator</Text>
                 <View style={styles.row}>
-                    <Text style={[styles.text, styles.moneyText]}>3000.00 USD</Text>
+                    <Text style={[styles.text, styles.moneyText]}>{parseFloat(totalMoney)} USD</Text>
                 </View>
             </View>
         </View>

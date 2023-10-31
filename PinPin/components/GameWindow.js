@@ -2,8 +2,7 @@ import { Dimensions, View, StyleSheet } from 'react-native';
 import React from 'react';
 import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming , cancelAnimation} from 'react-native-reanimated';
 import CrashScore from './CrashScore';
-import { useSelector, useDispatch } from 'react-redux';
-import { setScore, setGameEnd } from '../modules/ScoreSlice'
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 
@@ -14,21 +13,24 @@ export default GameWindow = () => {
     const translateX = useSharedValue(0);
     const restartGame = () => {
         console.log("time out")
-        translateX.value = 0
-        translateY.value = 0
     }
     const animateToPoint = async () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
-        translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear });
+        translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear },()=>{
+            console.log("end anim")
+        });
+        
     };
     const StartGame = async () => {
         if (!isEndGame) {
             animateToPoint();
+            
         } else {
             console.log("Score in gameWindow", Score[Score.length-1])
             console.log("game is end", isEndGame)
             cancelAnimation(translateX)
             cancelAnimation(translateY)
+            
         }
 
     }
@@ -37,7 +39,9 @@ export default GameWindow = () => {
         return () => {
             setTimeout(() => {
                 restartGame() 
-              }, 5000); 
+                translateX.value = 0
+                translateY.value = 0
+              }, 6500); 
         };
     }, [isEndGame]);
     const animatedStyle = useAnimatedStyle(() => {

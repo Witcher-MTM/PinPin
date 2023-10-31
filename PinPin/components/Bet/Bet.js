@@ -2,8 +2,12 @@ import { Dimensions, StyleSheet, View, Text, TouchableWithoutFeedback } from "re
 import BetTypeSwitch from "./BetTypeSwitch";
 const { width, height } = Dimensions.get('window');
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 export default Bet = () => {
     const [bet, setBet] = React.useState(1)
+    const isEnd = (useSelector((state) => state.score.isEnd))
+    const [isSetBet, setIsSetBet] = React.useState(false)
     const increase = () => {
         if (bet >= 100) {
             setBet(100)
@@ -24,6 +28,33 @@ export default Bet = () => {
             setBet((prevBet) => parseFloat((prevBet + amount).toFixed(1)));
         }
     };
+    const confirmBet = () => {
+        if (!isEnd) {
+            console.log("u cant bet while game ")
+        }
+        else {
+            setIsSetBet(true)
+            console.log("Confirmed bet ", bet)
+        }
+    }
+    const catchReward = () => {
+        if (isSetBet) {
+            console.log("u won")
+            setIsSetBet(false)
+            return
+        } else {
+            console.log("u didnt have a bet")
+        }
+    }
+    const loseMoney = ()=>{
+        if(isSetBet){
+            console.log("u lose")
+            
+        }
+    }
+    React.useEffect(() => {
+        catchReward()
+    }, [isEnd])
     return (
         <View style={styles.container}>
             <View style={styles.typeBet}>
@@ -63,12 +94,20 @@ export default Bet = () => {
                 </View>
             </View>
             <View style={styles.yourBet}>
-                    <TouchableWithoutFeedback>
+                {isSetBet
+                    ?
+                    <TouchableWithoutFeedback onPress={catchReward}>
                         <View style={styles.yourBetButton}>
-                            <Text style={styles.yourBetButtonText}>Ваша ставка {bet}</Text>
+                            <Text style={styles.yourBetButtonText}>Вивести</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                </View>
+                    :
+                    <TouchableWithoutFeedback onPress={confirmBet}>
+                        <View style={styles.yourBetButton}>
+                            <Text style={styles.yourBetButtonText}>Ставка {parseFloat(bet).toFixed(2)}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>}
+            </View>
         </View>
     );
 }
@@ -140,7 +179,7 @@ const styles = StyleSheet.create({
     },
     yourBet: {
         marginLeft: 200,
-        marginBottom:10,
+        marginBottom: 10,
     },
     yourBetButton: {
         width: width * 0.45,
@@ -149,8 +188,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth:1,
-        borderColor:"#FFFFFF"
+        borderWidth: 1,
+        borderColor: "#FFFFFF"
     },
     yourBetButtonText: {
         color: "#FFFFFF",

@@ -1,7 +1,7 @@
 import { Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { useDispatch } from "react-redux";
-import { setScore, setGameEnd } from '../modules/ScoreSlice'
+import { setScore, setGameEnd, setIsGame } from '../modules/ScoreSlice'
 export default CrashScore = () => {
     const [randNumber, setRandNumber] = React.useState((Math.random() * 3).toFixed(2));
     const [scoreVisible, setScoreVisible] = React.useState(1)
@@ -12,7 +12,6 @@ export default CrashScore = () => {
         let scoreVisible = 0
         let interval = setInterval(function () {
             scoreVisible += 0.1
-            console.log("score", scoreVisible)
             setScoreVisible(scoreVisible)
             if (parseFloat(scoreVisible).toFixed(2) >= randNumber) {
                 dispatch(setScore(Number(scoreVisible).toFixed(2)))

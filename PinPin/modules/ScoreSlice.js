@@ -4,7 +4,8 @@ export const scoreSlice = createSlice({
   name: 'score',
   initialState: {
     value: [],
-    isEnd:false
+    isEnd:false,
+    isGameNow:false
   },
   reducers: {
     setScore: (state, action) => {
@@ -12,11 +13,14 @@ export const scoreSlice = createSlice({
     },
     setGameEnd:(state,action)=>{
         state.isEnd = action.payload
+    },
+    setIsGame:(state,action)=>{
+      state.isGameNow = action.payload
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setScore, setGameEnd } = scoreSlice.actions
+export const { setScore, setGameEnd, setIsGame } = scoreSlice.actions
 export const selectScore = (state) => state.score.value
 export default scoreSlice.reducer
