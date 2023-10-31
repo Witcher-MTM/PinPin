@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 export const scoreSlice = createSlice({
   name: 'score',
   initialState: {
-    value: 0,
+    value: [],
     isEnd:false
   },
   reducers: {
     setScore: (state, action) => {
-      state.value = action.payload
+      state.value.push(action.payload)
     },
     setGameEnd:(state,action)=>{
         state.isEnd = action.payload

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableWithoutFeedback, Text, StyleSheet } from "react-native";
 
-export default ScoreBarElements = ({ scoreid, text }) => {
+export default ScoreBarElements = ({ text }) => {
     return( 
         <TouchableWithoutFeedback>
             <Text style={styles.text}>{text}</Text>

@@ -3,30 +3,32 @@ import React from 'react';
 import { useDispatch } from "react-redux";
 import { setScore, setGameEnd } from '../modules/ScoreSlice'
 export default CrashScore = () => {
-    const [a, setA] = React.useState((Math.random() * 3).toFixed(2));
+    const [randNumber, setRandNumber] = React.useState((Math.random() * 3).toFixed(2));
     const [scoreVisible, setScoreVisible] = React.useState(1)
     const [color, setColor] = React.useState(false)
     const dispatch = useDispatch()
     React.useEffect(() => {
-        console.log("random", a)
+        console.log("random", randNumber)
         let scoreVisible = 0
-        // function creation
         let interval = setInterval(function () {
             scoreVisible += 0.1
             console.log("score", scoreVisible)
             setScoreVisible(scoreVisible)
-            if (parseFloat(scoreVisible).toFixed(2) >= a) {
+            if (parseFloat(scoreVisible).toFixed(2) >= randNumber) {
+                dispatch(setScore(Number(scoreVisible).toFixed(2)))
                 dispatch(setGameEnd(true))
-                dispatch(setScore(Number(scoreVisible)))
                 setColor(true)
                 console.log("stop")
+                setTimeout(() => {
+                    setRandNumber((Math.random() * 3).toFixed(2))
+                  }, 5000); 
                 clearInterval(interval);
             } else {
                 dispatch(setGameEnd(false))
                 setColor(false)
             }
         }, 250);
-    }, []);
+    }, [randNumber]);
 
 
     return (
