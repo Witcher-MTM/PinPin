@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch } from "react-redux";
 import { setScore, setGameEnd, setIsGame, setHistoryScore } from '../modules/ScoreSlice'
 export default CrashScore = () => {
-    const [randNumber, setRandNumber] = React.useState((Math.random() * (25 - 1) + 1).toFixed(2));
+    const [randNumber, setRandNumber] = React.useState((Math.random() * (10 - 1) + 1).toFixed(2));
     const [scoreVisible, setScoreVisible] = React.useState(1)
     const [color, setColor] = React.useState(false)
     const dispatch = useDispatch()
@@ -34,7 +34,7 @@ export default CrashScore = () => {
                 await setColor(true)
                 console.log("stop")
                 setTimeout(() => {
-                    setRandNumber((Math.random() * (25- 1) + 1).toFixed(2))
+                    setRandNumber((Math.random() * (10 - 1) + 1).toFixed(2))
                   }, 5000); 
                 clearInterval(interval);
             } else {

@@ -17,12 +17,14 @@ export default GameWindow = () => {
     const progress = useSharedValue(0);
     const [waitingForNewGame, setWaitingForNewGame] = React.useState(false);
     const translateX = useSharedValue(0);
+    const slideOpacity = useSharedValue(1);
     const propellerRotation = useSharedValue(0);
+    const [isAnimating, setIsAnimating] = React.useState(false);
 
     const animateToPoint = () => {
         cancelAnimation(progress)
         cancelAnimation(propellerRotation)
-        translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
+        translateX.value = withTiming(200, { duration: 5000, easing: Easing.linear });
         translateY.value = withTiming(-150, { duration: 5000, easing: Easing.linear }, () => {
             translateY.value = withRepeat(
                 withSpring(-145, { damping: 2, stiffness: 30 }),
@@ -42,13 +44,24 @@ export default GameWindow = () => {
             true // true означає, що анімація почнеться спочатку після завершення
         );
     };
+    const animatedSlideStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+            opacity: slideOpacity.value, // Налаштування прозорості сліда
+        };
+    });
     const StartGame = async () => {
         if (!isEndGame) {
+            setIsAnimating(true)
             animateToPoint();
-
         } else {
             cancelAnimation(translateX)
             cancelAnimation(translateY)
+            setIsAnimating(false)
+
+            translateX.value = withTiming(3000, { duration: 2000, easing: Easing.linear });
+            translateY.value = withTiming(-300, { duration: 500, easing: Easing.linear });
+
             progress.value = 0
             propellerRotation.value = 0
             setTimeout(() => {
@@ -97,11 +110,13 @@ export default GameWindow = () => {
                     <View style={styles.progressBarContainer}>
                         <Animated.Image source={require("../resources/images/propeller.png")} style={[styles.propeller, animatedPropStyle]}></Animated.Image>
                         <Animated.View style={[styles.progressBar, progressBarStyle]}></Animated.View>
-                    </View> : <ImageBackground source={require("../resources/gif/sky.gif")} style={styles.chartContainer}>
+                    </View> : <ImageBackground source={require("../resources/gif/sky_2.gif")} style={styles.chartContainer}>
                         <CrashScore></CrashScore>
                         {isWin ? <MessageView text={"U win"} backgroundColor={"rgb(3, 252, 15)"} /> : <></>}
                         <View style={styles.chart}>
                             <Animated.Image source={require("../resources/images/airplane.png")} style={[styles.image, animatedStyle]}></Animated.Image>
+
+                            <Animated.View style={[styles.slide, animatedSlideStyle]}></Animated.View>
                         </View>
                     </ImageBackground>}
             </View>
@@ -132,22 +147,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 5,
     },
-    waitingText:{
-        color:"#FFFFFF",
-        fontSize:20
+    waitingText: {
+        color: "#FFFFFF",
+        fontSize: 20
     },
     progressBarContainer: {
-        alignItems:'center',
-        justifyContent:'center',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: '100%',
-        height: height*0.4,
+        height: height * 0.4,
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
     progressBar: {
         height: '100%',
         backgroundColor: '#c41616',
     },
-    propeller:{
+    propeller: {
         width: width * 0.3,
         height: height * 0.14,
         borderRadius: 20,

@@ -1,18 +1,29 @@
 import React from 'react';
-import { TouchableWithoutFeedback, Text, StyleSheet } from "react-native";
+import { Text, StyleSheet } from 'react-native';
 
 export default ScoreBarElements = ({ text }) => {
-    return( 
-        <TouchableWithoutFeedback>
-            <Text style={styles.text}>{text}</Text>
-        </TouchableWithoutFeedback>
-    );
+  let textColor = 'red';
+
+  if (parseFloat(text) > 2) {
+    textColor = 'blue';
+  }
+  
+  if (parseFloat(text) > 5) {
+    textColor = 'darkviolet';
+  }
+
+  if (parseFloat(text) > 15) {
+    textColor = 'purple';
+  }
+
+  return (
+    <Text style={[styles.text, { color: textColor }]}>{text}</Text>
+  );
 }
 
 const styles = StyleSheet.create({
-    text: {
-      margin: 5,
-      fontSize: 20,
-      color:"#5a007a"
-    }
-  });
+  text: {
+    margin: 5,
+    fontSize: 20,
+  },
+});
