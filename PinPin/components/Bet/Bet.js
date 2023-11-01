@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     yourBetButton: {
         width: width * 0.45,
         height: height * 0.14,
-        backgroundColor: 'green',
+        backgroundColor: '#69ba2f',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
         borderColor: "#FFFFFF"
     },
     cancelButton: {
-        backgroundColor: 'red'
+        backgroundColor: '#c41616'
     },
     yourBetButtonText: {
         color: "#FFFFFF",

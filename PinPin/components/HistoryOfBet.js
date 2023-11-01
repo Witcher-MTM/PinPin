@@ -50,7 +50,7 @@ export default function HistoryOfBet() {
                     winout={parseFloat(item.winout).toFixed(2)}
                     score={item.score}
                     totalscore={item.totalscore}
-                    backgroundColor= {item.isWin?"#19691d":"#691919"}
+                    backgroundColor= {item.isWin?"#69ba2f":"#c41616"}
                 />
             ))}
         </View>

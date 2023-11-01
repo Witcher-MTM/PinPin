@@ -1,4 +1,4 @@
-import { Dimensions, View, StyleSheet, Image } from 'react-native';
+import { Dimensions, View, StyleSheet, ImageBackground } from 'react-native';
 import React from 'react';
 import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming, cancelAnimation, withSpring } from 'react-native-reanimated';
 import CrashScore from './CrashScore';
@@ -14,6 +14,7 @@ export default GameWindow = () => {
     const translateY = useSharedValue(-20);
     const Score = (useSelector((state) => state.score.value))
     const isEndGame = useSelector((state) => state.score.isEnd)
+    
     const translateX = useSharedValue(0);
     const animateToPoint = () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
@@ -53,11 +54,13 @@ export default GameWindow = () => {
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
+            <ImageBackground source={require("../resources/gif/sky.gif")} style={styles.chartContainer}>
                 <CrashScore></CrashScore>
                 {isWin?<MessageView text={"U win"} backgroundColor={"rgb(3, 252, 15)"}/>:<></>}
                 <View style={styles.chart}>
                     <Animated.Image source={require("../resources/images/airplane.png")} style={[styles.image, animatedStyle]}></Animated.Image>
                 </View>
+                </ImageBackground>
             </View>
         </View>
     );
@@ -71,12 +74,11 @@ const styles = StyleSheet.create({
     chartContainer: {
         width: width * 0.95,
         height: height * 0.3,
-        borderWidth: 2,
-        borderColor: "#5c5c5c",
         backgroundColor: "#171717",
         borderRadius: 20,
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
+        overflow: 'hidden'
     },
     chart: {
         width: width * 0.9,
