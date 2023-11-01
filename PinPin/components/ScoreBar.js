@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 export default ScoreBar = () => {
-    const Score = useSelector((state) => state.score.value);
+    const Score = useSelector((state) => state.score.historyValue);
     const uniqueKeyTracker = {};
   const reversedScore = [...Score].reverse();
   return (

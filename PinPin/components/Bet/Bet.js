@@ -3,8 +3,9 @@ import BetTypeSwitch from "./BetTypeSwitch";
 const { width, height } = Dimensions.get('window');
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setMoney } from "../../modules/MoneySlice";
+import { setMoney, setwinValue } from "../../modules/MoneySlice";
 import { saveDataToLocalStorage } from "../../modules/LocalStorage";
+import { setisWin } from "../../modules/ScoreSlice";
 
 export default Bet = () => {
     const dispatch = useDispatch()
@@ -44,10 +45,15 @@ export default Bet = () => {
             console.log("total money", total_money)
         }
     }
-    const catchReward = () => {
+    const catchReward = async() => {
             if (isSetBet) {
-                dispatch(setMoney((parseFloat(total_money) + parseFloat(bet) * parseFloat(Score)).toFixed(2)))
-                saveDataToLocalStorage({ key: "total_money", data: total_money})
+                var total_win = (parseFloat(total_money) + (parseFloat(bet) * parseFloat(Score))).toFixed(2)
+                console.log("total win:",total_win)
+                await dispatch(setMoney(total_win))
+                console.log(`${bet}*${Score} = ${parseFloat(bet) * parseFloat(Score).toFixed(2)}`)
+                await dispatch(setwinValue((parseFloat(bet) * parseFloat(Score)).toFixed(2)))
+                await dispatch(setisWin(true))
+                saveDataToLocalStorage({ key: "total_money", data: total_win})
                 setIsSetBet(false)
                 return
             } else {
@@ -62,6 +68,7 @@ export default Bet = () => {
         if (isEnd) {
             if (isSetBet) {
                 console.log("u lose", bet)
+                dispatch(setisWin(false))
                 dispatch(setMoney(parseFloat(total_money) - parseFloat(bet)))
                 saveDataToLocalStorage({ key: "total_money", data: (parseFloat(total_money) - parseFloat(bet)).toFixed(2) })
                 setIsSetBet(false)

@@ -5,7 +5,7 @@ import GameWindow from '../components/GameWindow';
 import Bet from '../components/Bet/Bet';
 import React from 'react';
 import {getDataFromLocalStorage, saveDataToLocalStorage} from "../modules/LocalStorage"
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setMoney } from '../modules/MoneySlice';
 
 export default Main = () => {

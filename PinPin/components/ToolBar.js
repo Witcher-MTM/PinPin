@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 const { width, height } = Dimensions.get('window');
 
 export default ToolBar = () => {
-    const [totalMoney, setTotalMoney] = React.useState(3000)
+    const [totalMoney, setTotalMoney] = React.useState(0)
     const tmp = useSelector((state)=>state.money.value)
     React.useEffect(()=>{
         setTotalMoney(tmp)
-    })
+    },[tmp])
     return (
         <View style={styles.container}>
             <View style={styles.row}>

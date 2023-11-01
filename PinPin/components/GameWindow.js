@@ -2,11 +2,15 @@ import { Dimensions, View, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming, cancelAnimation } from 'react-native-reanimated';
 import CrashScore from './CrashScore';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import MessageView from '../components/MessageView';
+import { setisWin } from '../modules/ScoreSlice';
 
 const { width, height } = Dimensions.get('window');
 
 export default GameWindow = () => {
+    const isWin = useSelector((state)=>state.score.isWin)
+    const dispatch = useDispatch()
     const translateY = useSharedValue(-20);
     const Score = (useSelector((state) => state.score.value))
     const isEndGame = useSelector((state) => state.score.isEnd)
@@ -26,6 +30,7 @@ export default GameWindow = () => {
             setTimeout(() => {
                 console.log("Score in gameWindow", Score[Score.length - 1])
                 console.log("game is end", isEndGame)
+                dispatch(setisWin(false))
                 cancelAnimation(translateX)
                 cancelAnimation(translateY)
                 translateX.value = 0
@@ -45,6 +50,7 @@ export default GameWindow = () => {
         <View style={styles.container}>
             <View style={styles.chartContainer}>
                 <CrashScore></CrashScore>
+                {isWin?<MessageView text={"U win"} backgroundColor={"rgb(3, 252, 15)"}/>:<></>}
                 <View style={styles.chart}>
                     <Animated.Image source={require("../resources/images/airplane.png")} style={[styles.image, animatedStyle]}></Animated.Image>
                 </View>
