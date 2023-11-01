@@ -50,7 +50,7 @@ const Bet = () => {
 
   const catchReward = async () => {
     if (isSetBet) {
-      const totalWin = (totalMoney + bet * Score).toFixed(2);
+      const totalWin = parseFloat(totalMoney + bet * Score).toFixed(2);
       dispatch(setValueWhenOut(Score));
       console.log("total win:", totalWin);
       await dispatch(setMoney(totalWin));
