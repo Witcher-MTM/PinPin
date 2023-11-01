@@ -10,9 +10,7 @@ export default Bet = () => {
     const dispatch = useDispatch()
     const [bet, setBet] = React.useState(1)
     const isEnd = (useSelector((state) => state.score.isEnd))
-    const isGameNow = useSelector((state) => state.score.isGameNow)
     const [isSetBet, setIsSetBet] = React.useState(false)
-    const [isSetBeforeGame, setIsSetBeforeGame] = React.useState(false)
     const [total_money, setTotalMoney] = React.useState(0)
     const Score = (useSelector((state) => state.score.value))
     const tmp_money = useSelector((state) => state.money.value)
@@ -40,10 +38,7 @@ export default Bet = () => {
         }
     };
     const confirmBet = () => {
-        if (!isEnd) {
-            setIsSetBeforeGame(true)
-        }
-        else {
+        if (isEnd) {
             setIsSetBet(true)
             console.log("Confirmed bet ", bet)
             console.log("total money", total_money)
@@ -84,12 +79,12 @@ export default Bet = () => {
             </View>
             <View style={styles.betSettings}>
                 <View style={styles.sumBet}>
-                    <TouchableWithoutFeedback onPress={increase}>
-                        <View style={styles.betButton}><Text style={styles.betButtonText}>+</Text></View>
-                    </TouchableWithoutFeedback>
-                    <Text style={styles.betAmount}>{bet}</Text>
                     <TouchableWithoutFeedback onPress={decrease}>
                         <View style={styles.betButton}><Text style={styles.betButtonText}>-</Text></View>
+                    </TouchableWithoutFeedback>
+                    <Text style={styles.betAmount}>{bet}</Text>
+                    <TouchableWithoutFeedback onPress={increase}>
+                        <View style={styles.betButton}><Text style={styles.betButtonText}>+</Text></View>
                     </TouchableWithoutFeedback>
                 </View>
                 <View style={styles.sumBetPatterns}>
@@ -121,7 +116,7 @@ export default Bet = () => {
                     <>
                     {isEnd 
                     ? <TouchableWithoutFeedback onPress={cancelBet}>
-                        <View style={styles.yourBetButton}>
+                        <View style={[styles.yourBetButton, isSetBet && styles.cancelButton]}>
                             <Text style={styles.yourBetButtonText}>Отмена</Text>
                         </View>
                     </TouchableWithoutFeedback> 
@@ -220,6 +215,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderColor: "#FFFFFF"
+    },
+    cancelButton:{
+        backgroundColor:'red'
     },
     yourBetButtonText: {
         color: "#FFFFFF",
