@@ -1,11 +1,11 @@
-import { Dimensions, StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import BetTypeSwitch from "./BetTypeSwitch";
 const { width, height } = Dimensions.get('window');
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setMoney, setwinValue } from "../../modules/MoneySlice";
-import { saveDataToLocalStorage } from "../../modules/LocalStorage";
-import { setisWin } from "../../modules/ScoreSlice";
+import { SaveHistoryWins, saveDataToLocalStorage } from "../../modules/LocalStorage";
+import { setValueWhenOut, setisWin } from "../../modules/ScoreSlice";
 
 export default Bet = () => {
     const dispatch = useDispatch()
@@ -15,6 +15,12 @@ export default Bet = () => {
     const [total_money, setTotalMoney] = React.useState(0)
     const Score = (useSelector((state) => state.score.value))
     const tmp_money = useSelector((state) => state.money.value)
+    const isAuto = useSelector((state) => state.score.isAuto)
+    const [whenCatch, setWhenCatch] = React.useState(1.1)
+    const [winout, setWinOut] = React.useState(0)
+    const [score, setScore] = React.useState(0)
+    const isWin = useSelector((state)=>state.score.isWin)
+    const ValuewhenOut = useSelector((state)=>state.score.valueWhenOut)
     const increase = () => {
         if (bet >= 100) {
             setBet(100)
@@ -45,36 +51,68 @@ export default Bet = () => {
             console.log("total money", total_money)
         }
     }
-    const catchReward = async() => {
-            if (isSetBet) {
-                var total_win = (parseFloat(total_money) + (parseFloat(bet) * parseFloat(Score))).toFixed(2)
-                console.log("total win:",total_win)
-                await dispatch(setMoney(total_win))
-                console.log(`${bet}*${Score} = ${parseFloat(bet) * parseFloat(Score).toFixed(2)}`)
-                await dispatch(setwinValue((parseFloat(bet) * parseFloat(Score)).toFixed(2)))
-                await dispatch(setisWin(true))
-                saveDataToLocalStorage({ key: "total_money", data: total_win})
-                setIsSetBet(false)
-                return
-            } else {
-                console.log("u didnt have a bet")
-            }
+    const catchReward = async () => {
+        if (isSetBet) {
+            var total_win = (parseFloat(total_money) + (parseFloat(bet) * parseFloat(Score))).toFixed(2)
+            dispatch(setValueWhenOut(Score))
+            console.log("total win:", total_win)
+            await dispatch(setMoney(total_win))
+            console.log(`${bet}*${Score} = ${parseFloat(bet) * parseFloat(Score).toFixed(2)}`)
+            await dispatch(setwinValue((parseFloat(bet) * parseFloat(Score)).toFixed(2)))
+            await dispatch(setisWin(true))
+            saveDataToLocalStorage({ key: "total_money", data: total_win })
+            setIsSetBet(false)
+            dispatch(setisWin(true))
+            setWinOut(bet*Score)
+            setScore(Score)
+            return
+        }
     }
-    const cancelBet = ()=>{
+    const cancelBet = () => {
         setIsSetBet(false)
-
     }
-    const loseMoney = () => {
+    const loseMoney = async () => {
         if (isEnd) {
             if (isSetBet) {
                 console.log("u lose", bet)
-                dispatch(setisWin(false))
+                await dispatch(setisWin(false))
                 dispatch(setMoney(parseFloat(total_money) - parseFloat(bet)))
                 saveDataToLocalStorage({ key: "total_money", data: (parseFloat(total_money) - parseFloat(bet)).toFixed(2) })
                 setIsSetBet(false)
+                SaveHistoryWins({
+                    key: "history", data: {
+                        isWin: false,
+                        winout: (bet*-1),
+                        score: 0,
+                        totalscore: Score
+                    }
+                })
+            }
+            if(isWin){
+                SaveHistoryWins({
+                    key: "history", data: {
+                        isWin: true,
+                        winout: winout,
+                        score: ValuewhenOut,
+                        totalscore: Score
+                    }
+                })
             }
         }
     }
+    const AutoCatch = () => {
+        if (isAuto) {
+            if (isSetBet) {
+                if (Score >= whenCatch) {
+                    console.log(parseFloat(whenCatch), parseFloat(Score))
+                    catchReward()
+                }
+            }
+        }
+    }
+    React.useEffect(() => {
+        AutoCatch(Score)
+    }, [Score])
     React.useEffect(() => {
         setTotalMoney(tmp_money)
         loseMoney()
@@ -83,6 +121,20 @@ export default Bet = () => {
         <View style={styles.container}>
             <View style={styles.typeBet}>
                 <BetTypeSwitch></BetTypeSwitch>
+                {isAuto ? <TextInput
+                    style={[styles.input, { color: '#878787' }]}
+                    value={whenCatch.toString()}
+                    onChangeText={(text) => {
+                        const numericText = text.replace(/[^0-9.]/g, '');
+                        if (numericText > 100) {
+                            setWhenCatch(100);
+                        } else {
+                            setWhenCatch(numericText)
+                        }
+
+                    }}
+                    keyboardType="numeric"
+                /> : <></>}
             </View>
             <View style={styles.betSettings}>
                 <View style={styles.sumBet}>
@@ -121,17 +173,17 @@ export default Bet = () => {
                 {isSetBet
                     ?
                     <>
-                    {isEnd 
-                    ? <TouchableWithoutFeedback onPress={cancelBet}>
-                        <View style={[styles.yourBetButton, isSetBet && styles.cancelButton]}>
-                            <Text style={styles.yourBetButtonText}>Отмена</Text>
-                        </View>
-                    </TouchableWithoutFeedback> 
-                    : <TouchableWithoutFeedback onPress={catchReward}>
-                        <View style={styles.yourBetButton}>
-                            <Text style={styles.yourBetButtonText}>Вивести</Text>
-                        </View>
-                    </TouchableWithoutFeedback> }
+                        {isEnd
+                            ? <TouchableWithoutFeedback onPress={cancelBet}>
+                                <View style={[styles.yourBetButton, isSetBet && styles.cancelButton]}>
+                                    <Text style={styles.yourBetButtonText}>Отмена</Text>
+                                </View>
+                            </TouchableWithoutFeedback>
+                            : <TouchableWithoutFeedback onPress={catchReward}>
+                                <View style={styles.yourBetButton}>
+                                    <Text style={styles.yourBetButtonText}>Вивести</Text>
+                                </View>
+                            </TouchableWithoutFeedback>}
                     </>
                     :
                     <TouchableWithoutFeedback onPress={confirmBet}>
@@ -139,7 +191,9 @@ export default Bet = () => {
                             <Text style={styles.yourBetButtonText}>Ставка {parseFloat(bet).toFixed(2)}</Text>
                         </View>
                     </TouchableWithoutFeedback>}
+
             </View>
+
         </View>
     );
 }
@@ -147,12 +201,10 @@ export default Bet = () => {
 const styles = StyleSheet.create({
     container: {
         width: width * 0.95,
-        height: height * 0.2,
         backgroundColor: '#1b1c1d',
         borderRadius: 30
     },
     typeBet: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -223,11 +275,21 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#FFFFFF"
     },
-    cancelButton:{
-        backgroundColor:'red'
+    cancelButton: {
+        backgroundColor: 'red'
     },
     yourBetButtonText: {
         color: "#FFFFFF",
         fontSize: 20,
+    },
+    input: {
+        textAlign: 'center',
+        backgroundColor: "#000000",
+        borderRadius: 10,
+        borderWidth: 2,
+        paddingHorizontal: 10,
+        width: width * 0.4,
+        fontSize: 20,
+        fontWeight: 'bold',
     },
 })

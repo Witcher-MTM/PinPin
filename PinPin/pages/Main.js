@@ -7,6 +7,7 @@ import React from 'react';
 import {getDataFromLocalStorage, saveDataToLocalStorage} from "../modules/LocalStorage"
 import { useDispatch, useSelector } from 'react-redux';
 import { setMoney } from '../modules/MoneySlice';
+import HistoryOfBet from '../components/HistoryOfBet';
 
 export default Main = () => {
   const dispatch = useDispatch()
@@ -29,6 +30,7 @@ export default Main = () => {
       <ScoreBar/>
       <GameWindow/>
       <Bet/>
+      <HistoryOfBet></HistoryOfBet>
       </SafeAreaView>
   );
 }

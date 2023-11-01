@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 export default ScoreBar = () => {
-    const Score = useSelector((state) => state.score.historyValue);
-    const uniqueKeyTracker = {};
+  const Score = useSelector((state) => state.score.historyValue);
+  const uniqueKeyTracker = {};
   const reversedScore = [...Score].reverse();
   return (
     <View style={styles.container}>
@@ -14,7 +14,7 @@ export default ScoreBar = () => {
         if (!uniqueKeyTracker[scoreItem]) {
           uniqueKeyTracker[scoreItem] = true;
           return (
-            <View key={scoreItem} style={styles.row}>
+            <View key={scoreItem}>
               <ScoreBarElements scoreid={`score-${scoreItem}`} text={`${parseFloat(scoreItem).toFixed(2)}x`} />
             </View>
           );
@@ -23,17 +23,17 @@ export default ScoreBar = () => {
       })}
     </View>
   );
-  }
-  
-  
+}
+
+
 
 const styles = StyleSheet.create({
-    container: {
-        paddingLeft:15,
-        backgroundColor: '#000000',
-        alignItems: 'left',
-        width: width,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
+  container: {
+    paddingLeft: 15,
+    backgroundColor: '#000000',
+    alignItems: 'left',
+    width: width,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });

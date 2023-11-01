@@ -1,6 +1,6 @@
 import { Dimensions, View, StyleSheet, Image } from 'react-native';
 import React from 'react';
-import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming, cancelAnimation } from 'react-native-reanimated';
+import Animated, { Easing, withRepeat, useSharedValue, useAnimatedStyle, withTiming, cancelAnimation, withSpring } from 'react-native-reanimated';
 import CrashScore from './CrashScore';
 import { useSelector, useDispatch } from 'react-redux';
 import MessageView from '../components/MessageView';
@@ -17,8 +17,12 @@ export default GameWindow = () => {
     const translateX = useSharedValue(0);
     const animateToPoint = () => {
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
-        translateY.value = withTiming(-100, { duration: 5000, easing: Easing.linear }, () => {
-            console.log("end anim")
+        translateY.value = withTiming(-150, { duration: 5000, easing: Easing.linear }, () => {
+            translateY.value = withRepeat(
+                withSpring(-145, { damping: 2, stiffness: 30 }),
+                -1, // -1 вказує, що анімація повторюється безмежну кількість разів
+                false // true означає, що анімація почнеться спочатку після завершення
+              );
         });
 
     };
@@ -27,12 +31,12 @@ export default GameWindow = () => {
             animateToPoint();
 
         } else {
+            cancelAnimation(translateX)
+            cancelAnimation(translateY)
             setTimeout(() => {
                 console.log("Score in gameWindow", Score[Score.length - 1])
                 console.log("game is end", isEndGame)
                 dispatch(setisWin(false))
-                cancelAnimation(translateX)
-                cancelAnimation(translateY)
                 translateX.value = 0
                 translateY.value = 0
             }, 5000);
