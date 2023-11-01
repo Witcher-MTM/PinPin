@@ -17,7 +17,11 @@ export default GameWindow = () => {
     const progress = useSharedValue(0);
     const [waitingForNewGame, setWaitingForNewGame] = React.useState(false);
     const translateX = useSharedValue(0);
+    const propellerRotation = useSharedValue(0);
+
     const animateToPoint = () => {
+        cancelAnimation(progress)
+        cancelAnimation(propellerRotation)
         translateX.value = withTiming(250, { duration: 5000, easing: Easing.linear });
         translateY.value = withTiming(-150, { duration: 5000, easing: Easing.linear }, () => {
             translateY.value = withRepeat(
@@ -31,6 +35,13 @@ export default GameWindow = () => {
     const animProgress = () => {
         progress.value = withTiming(1, { duration: 4000 });
     }
+    const animatePropeller = () => {
+        propellerRotation.value = withRepeat(
+            withTiming(1800, { duration: 4000, easing: Easing.linear }),
+            -1, // -1 вказує, що анімація повторюється безмежну кількість разів
+            true // true означає, що анімація почнеться спочатку після завершення
+        );
+    };
     const StartGame = async () => {
         if (!isEndGame) {
             animateToPoint();
@@ -39,10 +50,12 @@ export default GameWindow = () => {
             cancelAnimation(translateX)
             cancelAnimation(translateY)
             progress.value = 0
+            propellerRotation.value = 0
             setTimeout(() => {
                 setWaitingForNewGame(true)
                 animProgress();
-            }, 1500);
+                animatePropeller();
+            }, 2500);
             setTimeout(() => {
                 console.log("Score in gameWindow", Score[Score.length - 1])
                 console.log("game is end", isEndGame)
@@ -50,7 +63,7 @@ export default GameWindow = () => {
                 translateX.value = 0
                 translateY.value = 0
                 setWaitingForNewGame(false)
-            }, 5000);
+            }, 6500);
         }
     }
     React.useEffect(() => {
@@ -68,12 +81,21 @@ export default GameWindow = () => {
             backgroundColor: '#c41616',
         };
     });
+    const animatedPropStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: 0 },
+                { translateY: 0 },
+                { rotate: `${propellerRotation.value}deg` },
+            ],
+        };
+    });
     return (
         <View style={styles.container}>
             <View style={styles.chartContainer}>
                 {waitingForNewGame ?
                     <View style={styles.progressBarContainer}>
-                        <Text style={styles.waitingText}>Waiting for new game</Text>
+                        <Animated.Image source={require("../resources/images/propeller.png")} style={[styles.propeller, animatedPropStyle]}></Animated.Image>
                         <Animated.View style={[styles.progressBar, progressBarStyle]}></Animated.View>
                     </View> : <ImageBackground source={require("../resources/gif/sky.gif")} style={styles.chartContainer}>
                         <CrashScore></CrashScore>
@@ -125,4 +147,9 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: '#c41616',
     },
+    propeller:{
+        width: width * 0.3,
+        height: height * 0.14,
+        borderRadius: 20,
+    }
 });
