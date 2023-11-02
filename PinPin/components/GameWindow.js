@@ -24,12 +24,12 @@ export default GameWindow = () => {
     const animateToPoint = () => {
         cancelAnimation(progress)
         cancelAnimation(propellerRotation)
-        translateX.value = withTiming(200, { duration: 5000, easing: Easing.linear });
-        translateY.value = withTiming(-150, { duration: 5000, easing: Easing.linear }, () => {
+        translateX.value = withTiming(200, { duration: 7500, easing: Easing.linear });
+        translateY.value = withTiming(-150, { duration: 7500, easing: Easing.sin }, () => {
             translateY.value = withRepeat(
-                withSpring(-145, { damping: 2, stiffness: 30 }),
-                -1, // -1 вказує, що анімація повторюється безмежну кількість разів
-                false // true означає, що анімація почнеться спочатку після завершення
+                withSpring(-145, { damping: 2, stiffness: 15 }),
+                -1, 
+                false 
             );
         });
 
@@ -40,14 +40,14 @@ export default GameWindow = () => {
     const animatePropeller = () => {
         propellerRotation.value = withRepeat(
             withTiming(1800, { duration: 4000, easing: Easing.linear }),
-            -1, // -1 вказує, що анімація повторюється безмежну кількість разів
-            true // true означає, що анімація почнеться спочатку після завершення
+            -1, 
+            true 
         );
     };
     const animatedSlideStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
-            opacity: slideOpacity.value, // Налаштування прозорості сліда
+            opacity: slideOpacity.value,
         };
     });
     const StartGame = async () => {
@@ -60,7 +60,7 @@ export default GameWindow = () => {
             setIsAnimating(false)
 
             translateX.value = withTiming(3000, { duration: 2000, easing: Easing.linear });
-            translateY.value = withTiming(-300, { duration: 500, easing: Easing.linear });
+            translateY.value = withTiming(-400, { duration: 500, easing: Easing.linear });
 
             progress.value = 0
             propellerRotation.value = 0
@@ -115,7 +115,6 @@ export default GameWindow = () => {
                         {isWin ? <MessageView text={"U win"} backgroundColor={"rgb(3, 252, 15)"} /> : <></>}
                         <View style={styles.chart}>
                             <Animated.Image source={require("../resources/images/airplane.png")} style={[styles.image, animatedStyle]}></Animated.Image>
-
                             <Animated.View style={[styles.slide, animatedSlideStyle]}></Animated.View>
                         </View>
                     </ImageBackground>}
@@ -166,5 +165,5 @@ const styles = StyleSheet.create({
         width: width * 0.3,
         height: height * 0.14,
         borderRadius: 20,
-    }
+    },
 });

@@ -25,19 +25,26 @@ const Bet = () => {
   const valueWhenOut = useSelector((state) => state.score.valueWhenOut);
 
   const increase = () => {
-    const newBet = bet + 0.1 > 100 ? 100 : parseFloat((bet + 0.1).toFixed(1));
-    setBet(newBet);
+    if(!isSetBet){
+      const newBet = bet + 0.1 > 100 ? 100 : parseFloat((bet + 0.1).toFixed(1));
+      setBet(newBet);
+    }
+    
   };
 
   const decrease = () => {
-    if (bet > 0.1) {
-      setBet(parseFloat((bet - 0.1).toFixed(1)));
+    if(!isSetBet){
+      if (bet > 0.1) {
+        setBet(parseFloat((bet - 0.1).toFixed(1)));
+      }
     }
   };
 
   const updateBet = (amount) => {
-    const newBet = bet + amount > totalMoney ? totalMoney : bet + amount;
-    setBet(parseFloat(newBet.toFixed(1)));
+    if(!isSetBet){
+      const newBet = bet + amount > totalMoney ? totalMoney : bet + amount;
+      setBet(parseFloat(newBet.toFixed(1)));
+    }
   };
 
   const confirmBet = () => {
@@ -50,20 +57,21 @@ const Bet = () => {
 
   const catchReward = async () => {
     if (isSetBet) {
-      const totalWin = parseFloat(totalMoney + bet * Score).toFixed(2);
-      dispatch(setValueWhenOut(Score));
-      console.log("total win:", totalWin);
-      await dispatch(setMoney(totalWin));
-      await dispatch(setwinValue(parseFloat(bet * Score).toFixed(2)));
-      await dispatch(setisWin(true));
-      saveDataToLocalStorage({ key: "total_money", data: totalWin });
-      setIsSetBet(false);
-      dispatch(setisWin(true));
-      setWinOut(bet * Score);
-      setScore(Score);
-      return;
+        dispatch(setisWin(true));
+        setIsSetBet(false);
+        console.log(`${totalMoney}, ${bet}, ${Score}`);
+        const totalWin = (parseFloat(totalMoney) + (bet * Score)).toFixed(2); // Оновлено обчислення totalWin
+        dispatch(setValueWhenOut(Score));
+        console.log("total win:", totalWin);
+        dispatch(setMoney(totalWin));
+        dispatch(setwinValue((bet * Score).toFixed(2)));
+        saveDataToLocalStorage({ key: "total_money", data: totalWin });
+        setWinOut(bet * Score);
+        setScore(Score);
+        return;
     }
-  };
+};
+
 
   const cancelBet = () => {
     setIsSetBet(false);

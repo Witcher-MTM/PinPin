@@ -28,17 +28,23 @@ export const SaveHistoryWins = async (obj) => {
         const { key, data } = obj;
         const localData = await AsyncStorage.getItem(key);
         let existingData = localData ? JSON.parse(localData) : [];
-        console.log("in save", existingData)
-        console.log("in save data", data)
-        const collection = [...existingData];
-        collection.push(data)
-        console.log("in save", collection)
-        await AsyncStorage.setItem(key, JSON.stringify(collection));
+
+        // Перевірка, чи довжина колекції більше 30
+        if (existingData.length >= 25) {
+            // Видалення першого об'єкта
+            existingData.shift();
+        }
+
+        // Додавання нового об'єкта до колекції
+        existingData.push(data);
+
+        await AsyncStorage.setItem(key, JSON.stringify(existingData));
         console.log(`Дані збережено успішно.`);
     } catch (error) {
         console.error('Помилка збереження даних: ', error);
     }
 };
+
 export const clearAllData = async () => {
     try {
         await AsyncStorage.clear();

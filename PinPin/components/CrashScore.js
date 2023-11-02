@@ -28,19 +28,19 @@ export default CrashScore = () => {
             }
             await setScoreVisible(LocalscoreVisible)
             if (LocalscoreVisible > randNumber) {
+                dispatch(setGameEnd(true))
+                setColor(true)
+                console.log("stop")
                 await dispatch(setHistoryScore(Number(LocalscoreVisible).toFixed(2)))
                 await dispatch(setScore(Number(LocalscoreVisible).toFixed(2)))
-                await dispatch(setGameEnd(true))
-                await setColor(true)
-                console.log("stop")
                 setTimeout(() => {
                     setRandNumber((Math.random() * (10 - 1) + 1).toFixed(2))
                   }, 5000); 
                 clearInterval(interval);
             } else {
-                await dispatch(setScore(Number(LocalscoreVisible).toFixed(2)))
-                await dispatch(setGameEnd(false))
-                await setColor(false)
+                dispatch(setScore(Number(LocalscoreVisible).toFixed(2)))
+                dispatch(setGameEnd(false))
+                setColor(false)
             }
         }, 150);
     }, [randNumber]);
