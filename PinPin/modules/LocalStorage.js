@@ -13,7 +13,7 @@ export const getDataFromLocalStorage = async (key) => {
     try {
         const data = await AsyncStorage.getItem(key);
         if (data !== null) {
-            console.log('Отримані дані з локального сховища:');
+            console.log('Отримані дані з локального сховища:', data);
             return data
         } else {
             console.log('Дані не знайдено в локальному сховищі.');
