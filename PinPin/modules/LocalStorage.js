@@ -53,3 +53,34 @@ export const clearAllData = async () => {
         console.error('Помилка під час видалення даних: ', error);
     }
 }
+
+export const saveUserDataWithDate = async (money) => {
+    try {
+        const currentDate = new Date();
+        const currentDateStr = currentDate.toDateString();
+
+        
+        const savedDateStr = await AsyncStorage.getItem('date');
+        if(!savedDateStr){
+            saveDataToLocalStorage({key:'date', date:currentDateStr})
+            return
+        }
+        else{
+            if (currentDateStr !== savedDateStr) {
+                await AsyncStorage.setItem(`date`, currentDateStr);
+                const total_money = await getDataFromLocalStorage("total_money")
+                if(total_money){
+                    total_money+=500
+                    saveDataToLocalStorage({key:"total_money", data:3000})
+                }
+            }
+            const savedData = await AsyncStorage.getItem('date');
+            if (savedData) {
+                const parsedData = savedData;
+            }
+        }
+    } catch (error) {
+        console.error('Помилка збереження даних: ', error);
+    }
+};
+
