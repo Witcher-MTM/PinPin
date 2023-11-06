@@ -5,7 +5,7 @@ import { setMoney, setwinValue } from '../../modules/MoneySlice';
 import { SaveHistoryWins, saveDataToLocalStorage } from '../../modules/LocalStorage';
 import { setValueWhenOut, setisWin } from '../../modules/ScoreSlice';
 import BetTypeSwitch from './BetTypeSwitch';
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 const { width, height } = Dimensions.get('window');
 
 const Bet = () => {
@@ -265,12 +265,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   yourBet: {
-    marginLeft: 200,
+    marginLeft:"55%",
     marginBottom: 10,
   },
   yourBetButton: {
-    width: width * 0.4,
-    height: height * 0.14,
+    width: wp('40%'),
+    height: hp('14%'),
     backgroundColor: '#69ba2f',
     borderRadius: 20,
     justifyContent: 'center',

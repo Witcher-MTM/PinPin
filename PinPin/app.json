@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PinPin",
-    "slug": "PinPin",
-    "version": "1.0.0",
+    "name": "PinPinAviator",
+    "slug": "PinPinAviator",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./resources/icon.png",
     "userInterfaceStyle": "light",

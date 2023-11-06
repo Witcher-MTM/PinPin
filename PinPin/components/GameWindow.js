@@ -5,6 +5,7 @@ import CrashScore from './CrashScore';
 import { useSelector, useDispatch } from 'react-redux';
 import MessageView from '../components/MessageView';
 import { setisWin } from '../modules/ScoreSlice';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const { width, height } = Dimensions.get('window');
 
@@ -160,10 +161,5 @@ const styles = StyleSheet.create({
     progressBar: {
         height: '100%',
         backgroundColor: '#c41616',
-    },
-    propeller: {
-        width: width * 0.3,
-        height: height * 0.14,
-        borderRadius: 20,
     },
 });

@@ -14,7 +14,7 @@ export default ToolBar = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logoText}>Aviator</Text>
+      <Text style={styles.logoText}>AviatorPRO</Text>
       <View style={styles.moneyContainer}>
         <Text style={styles.moneyText}>{parseFloat(totalMoney).toFixed(2)} USD</Text>
       </View>

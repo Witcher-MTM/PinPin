@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const saveDataToLocalStorage = async (obj) => {
     try {
         const { key, data } = obj
+        console.log(obj)
         console.log(`key:${key}, data:${data}`)
         await AsyncStorage.setItem(key, data.toString());
         console.log('Дані збережено успішно.');
@@ -54,7 +55,7 @@ export const clearAllData = async () => {
     }
 }
 
-export const saveUserDataWithDate = async (money) => {
+export const saveUserDataWithDate = async () => {
     try {
         const currentDate = new Date();
         const currentDateStr = currentDate.toDateString();
@@ -62,7 +63,7 @@ export const saveUserDataWithDate = async (money) => {
         
         const savedDateStr = await AsyncStorage.getItem('date');
         if(!savedDateStr){
-            saveDataToLocalStorage({key:'date', date:currentDateStr})
+            saveDataToLocalStorage({key:'date', data:currentDateStr})
             return
         }
         else{

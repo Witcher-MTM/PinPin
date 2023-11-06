@@ -12,10 +12,10 @@ import HistoryOfBet from '../components/HistoryOfBet';
 export default Main = () => {
   const dispatch = useDispatch()
   const checkForLocalVariables = async()=>{
-    saveUserDataWithDate(100)
+    await saveUserDataWithDate()
     const total_money = await getDataFromLocalStorage("total_money")
     if(total_money==null){
-      saveDataToLocalStorage({key:"total_money", data:3000})
+      await saveDataToLocalStorage({key:"total_money", data:3000})
       dispatch(setMoney(3000))
     }
     else{
