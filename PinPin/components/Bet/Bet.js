@@ -177,13 +177,13 @@ const Bet = () => {
             {isEnd ? (
               <TouchableWithoutFeedback onPress={cancelBet}>
                 <View style={[styles.yourBetButton, isSetBet && styles.cancelButton]}>
-                  <Text style={styles.yourBetButtonText}>Отмена</Text>
+                  <Text style={styles.yourBetButtonText}>Cancel</Text>
                 </View>
               </TouchableWithoutFeedback>
             ) : (
               <TouchableWithoutFeedback onPress={catchReward}>
                 <View style={styles.yourBetButton}>
-                  <Text style={styles.yourBetButtonText}>Вывести</Text>
+                  <Text style={styles.yourBetButtonText}>Take out</Text>
                 </View>
               </TouchableWithoutFeedback>
             )}
@@ -191,7 +191,7 @@ const Bet = () => {
         ) : (
           <TouchableWithoutFeedback onPress={confirmBet}>
             <View style={styles.yourBetButton}>
-              <Text style={styles.yourBetButtonText}>Ставка {parseFloat(bet).toFixed(2)}</Text>
+              <Text style={styles.yourBetButtonText}>Bet {parseFloat(bet).toFixed(2)}</Text>
             </View>
           </TouchableWithoutFeedback>
         )}
