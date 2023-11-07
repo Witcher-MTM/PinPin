@@ -2,7 +2,7 @@
   "expo": {
     "name": "PinPinAviator",
     "slug": "PinPinAviator",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./resources/icon.png",
     "userInterfaceStyle": "light",
@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./resources/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.neural1333.PinPinAviator"
     },
     "web": {
       "favicon": "./resources/icon.png"
